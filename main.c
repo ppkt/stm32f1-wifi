@@ -13,6 +13,8 @@ int main(void)
     USART2_Init();
 //    usart1_print("ATE0\r\n");
 
+    esp8266_reset(&line_ready);
+    esp8266_wait_for_answer(&line_ready);
     int i = 0;
     while(1)
     {
