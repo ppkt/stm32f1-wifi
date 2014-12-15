@@ -11,18 +11,13 @@ int main(void)
 {
     USART1_Init();
     USART2_Init();
-    usart1_print("ATE0\r\n");
+//    usart1_print("ATE0\r\n");
+
     int i = 0;
     while(1)
     {
-        esp8266_send_command(INQUIRY, AT);
-        for (i = 0; i < 10000000; ++i) {
-//            __WFI();
-            if (line_ready) {
-                esp8266_parse_line();
-                line_ready = 0;
-            }
-        }
+		esp8266_check_presence(&line_ready);
+        for (i = 0; i < 10000000; ++i) {}
     }
 }
 

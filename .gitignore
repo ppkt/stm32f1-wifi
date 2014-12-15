@@ -214,3 +214,5 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 stm32f1-wifi.cogui
+stm32f1-wifi.comarker
+stm32f1-wifi/stm32f1-wifi.elf.xcodeproj/project.pbxproj
