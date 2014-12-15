@@ -11,7 +11,9 @@ typedef enum {
     AT_CWQAP, // Disconnect from AP
     AT_CIPSERVER, // TCP Server
     AT, // Check module presence
-    AT_RST // Restarts device
+    AT_RST, // Restarts device
+    ATE0, // Disable echo
+    ATE1 // Enable echo
 } Operation;
 
 typedef enum {
@@ -30,6 +32,7 @@ typedef enum {
 //void esp8266_wait_for_answer();
 bool esp8266_check_presence(volatile u8 *line_ready);
 void esp8266_reset(volatile u8 *line_ready);
+void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
 
 
 #endif

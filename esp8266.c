@@ -12,6 +12,8 @@ const size_t ready_answer_length = strlen(ready_answer);
 
 const char at_inquiry[] = "AT\r\n";
 const char at_rst[] = "AT+RST\r\n";
+const char ate0[] = "ATE0\r\n";
+const char ate1[] = "ATE1\r\n";
 
 void esp8266_send_command(Type type, Operation operation) {
     if (s != STATUS_NOT_WORKING) {
@@ -29,6 +31,12 @@ void esp8266_send_command(Type type, Operation operation) {
         break;
     case AT_RST:
         usart1_print(at_rst);
+    	break;
+    case ATE0:
+    	usart1_print(ate0);
+    	break;
+    case ATE1:
+    	usart1_print(ate1);
     	break;
     case AT_CIFSR:
     case AT_CIPSERVER:
@@ -117,6 +125,15 @@ void esp8266_parse_line() {
             s = STATUS_NOT_WORKING;
         }
         break;
+    case ATE0:
+    case ATE1:
+        if (parse_ok(string) != 0) {
+            usart2_print("q"); // error
+        } else {
+            usart2_print("w"); // success
+            s = STATUS_NOT_WORKING;
+        }
+    	break;
     case AT_CIFSR:
     case AT_CIPSERVER:
     case AT_CWJAP:
@@ -146,4 +163,12 @@ bool esp8266_check_presence(volatile u8 *line_ready) {
 void esp8266_reset(volatile u8 *line_ready) {
 	esp8266_send_command(SET_EXECUTE, AT_RST);
 	esp8266_wait_for_answer(line_ready);
+}
+
+void esp8266_set_echo(bool new_state, volatile u8 *line_ready) {
+	if (new_state == true) {
+		esp8266_send_command(SET_EXECUTE, ATE1);
+	} else {
+		esp8266_send_command(SET_EXECUTE, ATE0);
+	}
 }
