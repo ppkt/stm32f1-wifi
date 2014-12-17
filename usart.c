@@ -1,7 +1,7 @@
 #include "usart.h"
 
 volatile char received_string[500];
-volatile char sent_string[500];
+//volatile char sent_string[500];
 volatile unsigned int received_count = 0; // count of charrs
 
 void usart1_print(char* c) {
@@ -87,8 +87,8 @@ void USART2_Init()
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // USART1
-    USART_InitStructure.USART_BaudRate = 9600;
+    // USART2
+    USART_InitStructure.USART_BaudRate = 921600;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
     USART_InitStructure.USART_Parity = USART_Parity_No;

@@ -28,11 +28,28 @@ typedef enum {
     STATUS_PROBLEM
 } Status;
 
+typedef enum {
+	ENCRYPTION_NONE = 0,
+	ENCRYPTION_WEP,
+	ENCRYPTION_WPA_PSK,
+	ENCRYPTION_WPA_PSK2,
+	ENCRYPTION_WPA2_PSK
+} Encryption;
+
+typedef struct {
+	Encryption encryption;
+	char* essid;
+	short int signal;
+	char* mac;
+	unsigned short int channel;
+} Access_Point;
+
 void esp8266_init();
 bool esp8266_check_presence(volatile u8 *line_ready);
 void esp8266_reset(volatile u8 *line_ready);
 void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
 char* esp8266_get_ip_addresses();
+char** esp8266_get_list_of_aps();
 
 
 #endif

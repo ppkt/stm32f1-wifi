@@ -13,21 +13,24 @@ int main(void)
     USART2_Init();
     esp8266_init(&line_ready);
 
-    esp8266_reset(&line_ready);
-    esp8266_wait_for_answer(&line_ready);
+//    esp8266_reset(&line_ready);
+//    esp8266_wait_for_answer(&line_ready);
 
     // disable echo
     esp8266_set_echo(false, &line_ready);
     esp8266_wait_for_answer(&line_ready);
 
-    // enable echo
-    esp8266_set_echo(true, &line_ready);
-    esp8266_wait_for_answer(&line_ready);
+//    // enable echo
+//    esp8266_set_echo(true, &line_ready);
+//    esp8266_wait_for_answer(&line_ready);
 
 	esp8266_check_presence(&line_ready);
 
 	// check IP address (should work)
-	esp8266_get_ip_addresses();
+//	esp8266_get_ip_addresses();
+
+	// get list of Access Points
+	esp8266_get_list_of_aps();
 
 	esp8266_check_presence(&line_ready);
     int i = 0;

@@ -4,7 +4,7 @@
     <Device manufacturerId="9" manufacturerName="ST" chipId="257" chipName="STM32F100RB" boardId="" boardName=""/>
     <BuildOption>
       <Compile>
-        <Option name="OptimizationLevel" value="1"/>
+        <Option name="OptimizationLevel" value="0"/>
         <Option name="UseFPU" value="0"/>
         <Option name="UserEditCompiler" value=""/>
         <Option name="SupportCPlusplus" value="0"/>
@@ -65,6 +65,12 @@
       <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="STM32F10x_MD_128.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.coredebugInRamInitCommands" value="cd D:/workspace/stm32f1-wifi/stm32f1-wifi/Debug/bin
+restore stm32f1-wifi.elf
+set {unsigned int*}0xE000ED08 = 0x20000000
+set $sp = {unsigned int*}0x20000000
+set $pc = {unsigned int*}0x20000004
+"/>
     </DebugOption>
     <ExcludeFile/>
   </Target>
