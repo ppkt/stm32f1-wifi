@@ -11,7 +11,7 @@ int main(void)
 {
     USART1_Init();
     USART2_Init();
-//    usart1_print("ATE0\r\n");
+    esp8266_init(&line_ready);
 
     esp8266_reset(&line_ready);
     esp8266_wait_for_answer(&line_ready);
@@ -23,10 +23,16 @@ int main(void)
     // enable echo
     esp8266_set_echo(true, &line_ready);
     esp8266_wait_for_answer(&line_ready);
+
+	esp8266_check_presence(&line_ready);
+
+	// check IP address (should work)
+	esp8266_get_ip_addresses();
+
+	esp8266_check_presence(&line_ready);
     int i = 0;
     while(1)
     {
-		esp8266_check_presence(&line_ready);
         for (i = 0; i < 10000000; ++i) {}
     }
 }

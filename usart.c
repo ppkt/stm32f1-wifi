@@ -116,4 +116,3 @@ volatile char* usart_get_string() {
 volatile u8 usart_get_string_length() {
     return received_count;
 }
-

@@ -14,6 +14,13 @@ const char at_inquiry[] = "AT\r\n";
 const char at_rst[] = "AT+RST\r\n";
 const char ate0[] = "ATE0\r\n";
 const char ate1[] = "ATE1\r\n";
+const char at_cifsr_t[] = "AT+CIFSR=?\r\n";
+
+volatile u8* l_ready = NULL;
+
+void esp8266_init(volatile u8* line_ready) {
+	l_ready = line_ready;
+}
 
 void esp8266_send_command(Type type, Operation operation) {
     if (s != STATUS_NOT_WORKING) {
@@ -39,6 +46,10 @@ void esp8266_send_command(Type type, Operation operation) {
     	usart1_print(ate1);
     	break;
     case AT_CIFSR:
+    	if (t == TYPE_TEST) {
+    		usart1_print(at_cifsr_t);
+    	}
+    	break;
     case AT_CIPSERVER:
     case AT_CWJAP:
     case AT_CWLAP:
@@ -135,6 +146,13 @@ void esp8266_parse_line() {
         }
     	break;
     case AT_CIFSR:
+        if (parse_AT(string) != 0) {
+            usart2_print("-"); // error
+        } else {
+            usart2_print("+"); // success
+            s = STATUS_NOT_WORKING;
+        }
+    	break;
     case AT_CIPSERVER:
     case AT_CWJAP:
     case AT_CWLAP:
@@ -154,21 +172,28 @@ void esp8266_wait_for_answer(volatile u8 *line_ready) {
 }
 
 bool esp8266_check_presence(volatile u8 *line_ready) {
-    esp8266_send_command(INQUIRY, AT);
+    esp8266_send_command(TYPE_INQUIRY, AT);
 	esp8266_wait_for_answer(line_ready);
 	return true;
 }
 
 
 void esp8266_reset(volatile u8 *line_ready) {
-	esp8266_send_command(SET_EXECUTE, AT_RST);
+	esp8266_send_command(TYPE_SET_EXECUTE, AT_RST);
 	esp8266_wait_for_answer(line_ready);
 }
 
 void esp8266_set_echo(bool new_state, volatile u8 *line_ready) {
 	if (new_state == true) {
-		esp8266_send_command(SET_EXECUTE, ATE1);
+		esp8266_send_command(TYPE_SET_EXECUTE, ATE1);
 	} else {
-		esp8266_send_command(SET_EXECUTE, ATE0);
+		esp8266_send_command(TYPE_SET_EXECUTE, ATE0);
 	}
+}
+
+char* esp8266_get_ip_addresses() {
+	esp8266_send_command(TYPE_TEST, AT_CIFSR);
+	esp8266_wait_for_answer(l_ready);
+	esp8266_wait_for_answer(l_ready);
+	return "";
 }

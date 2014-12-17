@@ -17,8 +17,9 @@ typedef enum {
 } Operation;
 
 typedef enum {
-    SET_EXECUTE,
-    INQUIRY
+    TYPE_SET_EXECUTE,
+    TYPE_INQUIRY,
+    TYPE_TEST
 } Type;
 
 typedef enum {
@@ -27,12 +28,11 @@ typedef enum {
     STATUS_PROBLEM
 } Status;
 
-//void esp8266_send_command(Type type, Operation operation);
-//void esp8266_parse_line();
-//void esp8266_wait_for_answer();
+void esp8266_init();
 bool esp8266_check_presence(volatile u8 *line_ready);
 void esp8266_reset(volatile u8 *line_ready);
 void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
+char* esp8266_get_ip_addresses();
 
 
 #endif
