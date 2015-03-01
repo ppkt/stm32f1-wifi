@@ -13,7 +13,13 @@ typedef enum {
     AT, // Check module presence
     AT_RST, // Restarts device
     ATE0, // Disable echo
-    ATE1 // Enable echo
+    ATE1, // Enable echo
+    AT_CWMODE, // Wifi mode (1 = Static, 2 = AP, 3 = both)
+    AT_CIPMUX, // 0 for single connection mode, 1 for multiple connection
+    AT_CIPSTART, // establish connetion with remote host
+    AT_CIPSEND, // begin sending data
+    AT_SEND_DATA, // send data
+    AT_CLOSE // close connection
 } Operation;
 
 typedef enum {
@@ -44,12 +50,25 @@ typedef struct {
 	unsigned short int channel;
 } Access_Point;
 
+typedef enum {
+    TCP = 0,
+    UDP
+} Protocol;
+
 void esp8266_init();
 bool esp8266_check_presence(volatile u8 *line_ready);
 void esp8266_reset(volatile u8 *line_ready);
 void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
+void esp8266_set_mode(u8 mode);
 char* esp8266_get_ip_addresses();
-char** esp8266_get_list_of_aps();
+void esp8266_get_connected_ap();
+void esp8266_get_list_of_aps();
+void esp8266_join_ap(char* login, char* password);
+void esp8266_connection_mode(u8 mode);
+void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, u8* data, u8 length);
 
+void esp8266_debug_print_connected_ap();
+void esp8266_debug_print_list_of_aps();
+void esp8266_debug_print_ip_address();
 
 #endif

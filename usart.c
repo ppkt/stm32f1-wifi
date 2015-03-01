@@ -1,7 +1,6 @@
 #include "usart.h"
 
-volatile char received_string[500];
-//volatile char sent_string[500];
+volatile char received_string[received_string_length];
 volatile unsigned int received_count = 0; // count of charrs
 
 void usart1_print(char* c) {
@@ -64,6 +63,8 @@ void USART1_Init()
     // Enable usart
     USART_Cmd(USART1, ENABLE);
 
+    memset(received_string, 0, received_string_length);
+
 }
 
 void USART2_Init()
@@ -74,7 +75,7 @@ void USART2_Init()
     /* Enable UART clock */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
-    // Use PA9 and PA10
+    // Use PA2 and PA3
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
 
@@ -106,12 +107,19 @@ void usart_string_append(char c) {
     received_string[received_count++] = c;
 }
 
+char usart_get_previous_char() {
+    if (received_count > 1) {
+        return received_string[received_count - 2];
+    }
+    return '\0';
+}
+
 void usart_clear_string() {
     received_count = 0;
 }
 
 volatile char* usart_get_string() {
-    return received_string;
+    return &received_string;
 }
 volatile u8 usart_get_string_length() {
     return received_count;

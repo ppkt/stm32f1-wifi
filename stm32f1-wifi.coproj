@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Project version="2G - 1.7.6" name="stm32f1-wifi">
   <Target name="stm32f1-wifi" isCurrent="1">
-    <Device manufacturerId="9" manufacturerName="ST" chipId="257" chipName="STM32F100RB" boardId="" boardName=""/>
+    <Device manufacturerId="9" manufacturerName="ST" chipId="305" chipName="STM32F103C8" boardId="" boardName=""/>
     <BuildOption>
       <Compile>
         <Option name="OptimizationLevel" value="0"/>
@@ -14,8 +14,8 @@
         <DefinedSymbols>
           <Define name="USE_STDPERIPH_DRIVER"/>
           <Define name="__ASSEMBLY__"/>
-          <Define name="STM32F100RB"/>
-          <Define name="STM32F10X_MD_VL"/>
+          <Define name="STM32F103C8"/>
+          <Define name="STM32F10X_MD"/>
         </DefinedSymbols>
       </Compile>
       <Link useDefault="0">
@@ -28,8 +28,8 @@
         <Option name="Library" value="Not use C Library"/>
         <LinkedLibraries/>
         <MemoryAreas debugInFlashNotRAM="1">
-          <Memory name="IROM1" type="ReadOnly" size="0x00020000" startValue="0x08000000"/>
-          <Memory name="IRAM1" type="ReadWrite" size="0x00002000" startValue="0x20000000"/>
+          <Memory name="IROM1" type="ReadOnly" size="0x00010000" startValue="0x08000000"/>
+          <Memory name="IRAM1" type="ReadWrite" size="0x00005000" startValue="0x20000000"/>
           <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
           <Memory name="IRAM2" type="ReadWrite" size="" startValue=""/>
         </MemoryAreas>
@@ -64,13 +64,8 @@
       <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
       <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
-      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="STM32F10x_MD_128.elf"/>
-      <Option name="org.coocox.codebugger.gdbjtag.coredebugInRamInitCommands" value="cd D:/workspace/stm32f1-wifi/stm32f1-wifi/Debug/bin
-restore stm32f1-wifi.elf
-set {unsigned int*}0xE000ED08 = 0x20000000
-set $sp = {unsigned int*}0x20000000
-set $pc = {unsigned int*}0x20000004
-"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="STM32F10x_MD_64.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.coredebugInRamInitCommands" value="cd D:/workspace/stm32f1-wifi/stm32f1-wifi/Debug/bin restore stm32f1-wifi.elf set {unsigned int*}0xE000ED08 = 0x20000000 set $sp = {unsigned int*}0x20000000 set $pc = {unsigned int*}0x20000004 "/>
     </DebugOption>
     <ExcludeFile/>
   </Target>
@@ -79,16 +74,16 @@ set $pc = {unsigned int*}0x20000004
     <Component id="31" name="Retarget printf" path="" type="2"/>
   </Components>
   <Files>
-    <File name="esp8266.c" path="esp8266.c" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f10x_md_vl.c" path="cmsis_boot/startup/startup_stm32f10x_md_vl.c" type="1"/>
+    <File name="esp8266.c" path="esp8266.c" type="1"/>
     <File name="cmsis_boot/system_stm32f10x.c" path="cmsis_boot/system_stm32f10x.c" type="1"/>
     <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
     <File name="stdio" path="" type="2"/>
     <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="cmsis/core_cm3.h" path="cmsis/core_cm3.h" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
-    <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
     <File name="usart.h" path="usart.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="stm_lib/src/misc.c" path="stm_lib/src/misc.c" type="1"/>
