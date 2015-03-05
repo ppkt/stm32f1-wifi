@@ -4,7 +4,7 @@
 
 Operation op;
 Type t;
-Status s = STATUS_NOT_WORKING;
+ESP8266_Status s = STATUS_NOT_WORKING;
 
 const char ok_answer[] = "OK\r\n";
 const size_t ok_answer_length = strlen(ok_answer);
@@ -39,6 +39,43 @@ char* connected_ap;
 void esp8266_init(volatile u8* line_ready) {
 	l_ready = line_ready;
 	g_buffer = usart_get_string();
+
+    // Reset and set mode 3
+//    esp8266_reset(&line_ready);
+//    esp8266_set_mode(3);
+
+    esp8266_check_presence(l_ready);
+
+    // disable echo
+    esp8266_set_echo(false, l_ready);
+    esp8266_wait_for_answer(l_ready);
+
+    // enable echo
+//    esp8266_set_echo(true, &line_ready);
+//    esp8266_wait_for_answer(&line_ready);
+
+    esp8266_check_presence(l_ready);
+    esp8266_wait_for_answer(l_ready);
+
+    // get information (ESSID) about AP
+//  esp8266_get_connected_ap();
+//  esp8266_debug_print_connected_ap();
+
+    // check IP address (should work)
+//    esp8266_get_ip_addresses();
+//    esp8266_debug_print_ip_address();
+
+    // get list of Access Points
+//    esp8266_get_list_of_aps();
+//    esp8266_debug_print_list_of_aps();
+
+//    esp8266_check_presence(&line_ready);
+
+    // Setup module to work in single connection mode
+    esp8266_connection_mode(0);
+
+    esp8266_check_presence(l_ready);
+    esp8266_wait_for_answer(l_ready);
 }
 
 u8 parse_ok(volatile char *buffer) {
@@ -359,7 +396,7 @@ void esp8266_send_command(Type type, Operation operation) {
     if (s != STATUS_NOT_WORKING) {
         // Operation in progress
         // TODO: Add message to queue?
-        return;
+        while (1) {}
     }
 
     op = operation;
@@ -554,17 +591,17 @@ void esp8266_parse_line() {
     }
 }
 
-volatile Status esp8266_status() {
+volatile ESP8266_Status esp8266_status() {
 	return s;
 }
 
 void esp8266_wait_for_answer(volatile u8 *line_ready) {
 	while (s != STATUS_NOT_WORKING) {
-		__WFI();
 		if (*line_ready) {
 			esp8266_parse_line();
 			*line_ready = 0;
 		}
+//        __WFI();
 	}
 }
 

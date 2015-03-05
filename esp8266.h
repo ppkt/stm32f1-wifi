@@ -32,7 +32,7 @@ typedef enum {
     STATUS_NOT_WORKING = 0,
     STATUS_WORKING,
     STATUS_PROBLEM
-} Status;
+} ESP8266_Status;
 
 typedef enum {
 	ENCRYPTION_NONE = 0,
@@ -55,20 +55,20 @@ typedef enum {
     UDP
 } Protocol;
 
-void esp8266_init();
+void esp8266_init(volatile u8* line_ready);
 bool esp8266_check_presence(volatile u8 *line_ready);
 void esp8266_reset(volatile u8 *line_ready);
 void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
 void esp8266_set_mode(u8 mode);
-char* esp8266_get_ip_addresses();
-void esp8266_get_connected_ap();
-void esp8266_get_list_of_aps();
+char* esp8266_get_ip_addresses(void);
+void esp8266_get_connected_ap(void);
+void esp8266_get_list_of_aps(void);
 void esp8266_join_ap(char* login, char* password);
 void esp8266_connection_mode(u8 mode);
 void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, u8* data, u8 length);
 
-void esp8266_debug_print_connected_ap();
-void esp8266_debug_print_list_of_aps();
-void esp8266_debug_print_ip_address();
+void esp8266_debug_print_connected_ap(void);
+void esp8266_debug_print_list_of_aps(void);
+void esp8266_debug_print_ip_address(void);
 
 #endif

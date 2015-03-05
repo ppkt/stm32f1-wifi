@@ -1,9 +1,9 @@
 #include "usart.h"
 
-volatile char received_string[received_string_length];
-volatile unsigned int received_count = 0; // count of charrs
+char received_string[received_string_length];
+unsigned int received_count = 0; // count of charrs
 
-void usart1_print(char* c) {
+void usart1_print(const char* c) {
     u8 a = 0;
     while (c[a]) {
         PrintChar(c[a++]);
@@ -115,12 +115,13 @@ char usart_get_previous_char() {
 }
 
 void usart_clear_string() {
+    memset(received_string, 0, received_string_length);
     received_count = 0;
 }
 
-volatile char* usart_get_string() {
-    return &received_string;
+char* usart_get_string() {
+    return received_string;
 }
-volatile u8 usart_get_string_length() {
+u8 usart_get_string_length() {
     return received_count;
 }
