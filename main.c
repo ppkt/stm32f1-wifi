@@ -5,8 +5,14 @@
 #include "usart.h"
 #include "esp8266.h"
 #include "hd44780-i2c.h"
+#include "ds18b20.h"
 
-volatile u8 line_ready = 0;
+u8 line_ready = 0;
+char buffer[40];
+char packet[128];
+
+char* ip_address = "192.168.0.16";
+//char* ip_address = "192.168.0.13"; // rpi
 
 void NVIC_Configuration(void)
 {
@@ -29,6 +35,43 @@ void NVIC_Configuration(void)
 
 }
 
+void update_display(simple_float *temperatures, u8 size) {
+    hd44780_cmd(0x01);
+    u8 len;
+    char hd_display[32];
+    memset(hd_display, 0, 32);
+
+    if (size >= 1) {
+        sprintf(buffer, "%d.%u", temperatures[0].integer, temperatures[0].fractional);
+        len = strlen(buffer);
+        strcat(hd_display, buffer);
+        memset(hd_display + len, ' ', 7 - len);
+    }
+
+    if (size >= 2) {
+        sprintf(buffer, " %d.%u", temperatures[1].integer, temperatures[1].fractional);
+        len = strlen(buffer);
+        strcat(hd_display, buffer);
+    }
+    hd44780_print(hd_display);
+    memset(hd_display, 0, 32);
+    hd44780_go_to_line(1);
+
+    if (size >= 3) {
+        sprintf(buffer, "%d.%u", temperatures[2].integer, temperatures[2].fractional);
+        len = strlen(buffer);
+        strcat(hd_display, buffer);
+        memset(hd_display + len, ' ', 7 - len);
+    }
+
+    if (size >= 4) {
+        sprintf(buffer, " %d.%u", temperatures[3].integer, temperatures[3].fractional);
+        len = strlen(buffer);
+        strcat(hd_display, buffer);
+    }
+    hd44780_print(hd_display);
+}
+
 int main(void)
 {
     // Initialize USART to WIFI module
@@ -38,6 +81,7 @@ int main(void)
 
     // Setup NVIC
 //    NVIC_Configuration();
+
     // Initialize I2C bus and i2c-hd44780 module
     I2C_LowLevel_Init(I2C1);
     hd44780_init(TIM2);
@@ -49,40 +93,77 @@ int main(void)
     if (SysTick_Config(SystemCoreClock / 1000))  while (1);
     usart2_print("Done\r\n");
 
-    // Initialize 1-Wire bus and thermal sensors conneted to bus
-    usart2_print("Initializing thermal sensor\r\n");
-    ds18b20_init(GPIOB, GPIO_Pin_9, TIM3);
-    usart2_print("Done\r\n");
-
-    usart2_print("Hello\r\n");
-
     // Initialize WIFI module
     esp8266_init(&line_ready);
 
-	char greeting[] = "Hello, world!";
-	esp8266_send_data("192.168.0.16", 5000, TCP, greeting, strlen(greeting));
+    // Initialize 1-Wire bus and thermal sensors conneted to bus
+    usart2_print("Initializing thermal sensor\r\n");
+    ds18b20_init(GPIOB, GPIO_Pin_9, TIM3);
+//    ds18b20_set_precission(0);
+    ds18b20_devices devices;
+    devices = ds18b20_get_devices();
+    u8 i, j;
+
+    memset(packet, 0, 128);
+    sprintf(buffer, "Found %u devices on 1-Wire", devices.size);
+    usart2_print(buffer);
+    for (i = 0; i < devices.size; ++i) {
+        sprintf(buffer, "Device %u:\r\n", i);
+        usart2_print(buffer);
+        for (j = 0; j < 8; ++j) {
+            memset(buffer, 0, 10);
+            sprintf(buffer, "%02X", devices.devices[i].address[j]);
+            usart2_print(buffer);
+            strcat(packet, buffer);
+        }
+
+        if (i + 1 < devices.size) {
+            strcat(packet, " ");
+        }
+
+        usart2_print("\r\n");
+    }
+    esp8266_send_data(ip_address, 6000, TCP, packet, strlen(packet));
     esp8266_wait_for_answer();
 
-    int i = 0;
+    usart2_print("Done\r\n");
+
+
+	char greeting[] = "Hello, world!";
+	esp8266_send_data(ip_address, 5000, TCP, greeting, strlen(greeting));
+    esp8266_wait_for_answer();
+
     int num = 0;
-    char buf[20];
     usart2_print("System ready\r\n");
     while(1)
     {
-        sprintf(buf, " %d ", num++);
-        hd44780_cmd(0x01);
-        hd44780_print(buf);
+        ++num;
 
         usart2_print("i");
-        ds18b20_read_temperature_all();
+        ds18b20_convert_temperature_all();
         usart2_print("I");
         ds18b20_wait_for_conversion();
         usart2_print("j");
-//        usart2_print("%d---\r\n", ds18b20_get_precission());
-        ds18b20_convert_temperature_all();
+        simple_float *temperatures = ds18b20_read_temperature_all();
         usart2_print("J");
 
-        esp8266_send_data("192.168.0.16", 5000, TCP, buf, strlen(buf));
+        memset(packet, 0, 128);
+
+        for (i = 0; i < devices.size; ++i) {
+            sprintf(buffer, "%d.%u", temperatures[i].integer, temperatures[i].fractional);
+            strcat(packet, buffer);
+
+            if (i + 1 < devices.size) {
+                strcat(packet, " ");
+            }
+        }
+
+        update_display(temperatures, devices.size);
+
+        usart2_print(packet);
+
+        free(temperatures);
+        esp8266_send_data(ip_address, 5000, TCP, packet, strlen(packet));
         esp8266_wait_for_answer();
     }
 }

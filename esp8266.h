@@ -3,6 +3,7 @@
 #include <stm32f10x.h>
 #include "usart.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef enum {
     AT_CWLAP, // Get AP list
@@ -55,17 +56,18 @@ typedef enum {
     UDP
 } Protocol;
 
-void esp8266_init(volatile u8* line_ready);
-bool esp8266_check_presence(volatile u8 *line_ready);
-void esp8266_reset(volatile u8 *line_ready);
-void esp8266_set_echo(bool new_state, volatile u8 *line_ready);
+void esp8266_init(u8* line_ready);
+void esp8266_wait_for_answer(void);
+bool esp8266_check_presence(void);
+void esp8266_reset(void);
+void esp8266_set_echo(bool new_state);
 void esp8266_set_mode(u8 mode);
 char* esp8266_get_ip_addresses(void);
 void esp8266_get_connected_ap(void);
 void esp8266_get_list_of_aps(void);
 void esp8266_join_ap(char* login, char* password);
 void esp8266_connection_mode(u8 mode);
-void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, u8* data, u8 length);
+void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, char* data, u8 length);
 
 void esp8266_debug_print_connected_ap(void);
 void esp8266_debug_print_list_of_aps(void);
