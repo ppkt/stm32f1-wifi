@@ -1,4 +1,6 @@
 #include <stm32f10x.h>
+#include <stm32f10x_tim.h>
+#include <stm32f10x_rcc.h>
 #include <misc.h>
 #include <stdio.h>
 
@@ -7,33 +9,15 @@
 #include "hd44780-i2c.h"
 #include "ds18b20.h"
 
+// Warning!
+// TIM2 and TIM3 are in use!
+
 u8 line_ready = 0;
 char buffer[40];
 char packet[128];
 
 char* ip_address = "192.168.0.16";
 //char* ip_address = "192.168.0.13"; // rpi
-
-void NVIC_Configuration(void)
-{
-
-    /* 1 bit for pre-emption priority, 3 bits for subpriority */
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-
-    NVIC_SetPriority(I2C1_EV_IRQn, 0x00);
-    NVIC_EnableIRQ(I2C1_EV_IRQn);
-
-    NVIC_SetPriority(I2C1_ER_IRQn, 0x01);
-    NVIC_EnableIRQ(I2C1_ER_IRQn);
-
-
-    NVIC_SetPriority(I2C2_EV_IRQn, 0x00);
-    NVIC_EnableIRQ(I2C2_EV_IRQn);
-
-    NVIC_SetPriority(I2C2_ER_IRQn, 0x01);
-    NVIC_EnableIRQ(I2C2_ER_IRQn);
-
-}
 
 void update_display(simple_float *temperatures, u8 size) {
     hd44780_cmd(0x01);
@@ -72,6 +56,31 @@ void update_display(simple_float *temperatures, u8 size) {
     hd44780_print(hd_display);
 }
 
+void get_sensors(char packet[128], ds18b20_devices devices) {
+    memset(packet, 0, 128);
+    u8 i, j;
+
+    strcat(packet, "1"); // Type of packet (1 - sensors on wire)
+    sprintf(buffer, "Found %u devices on 1-Wire", devices.size);
+    usart2_print(buffer);
+    for (i = 0; i < devices.size; ++i) {
+        sprintf(buffer, "Device %u:\r\n", i);
+        usart2_print(buffer);
+        for (j = 0; j < 8; ++j) {
+            memset(buffer, 0, 10);
+            sprintf(buffer, "%02X", devices.devices[i].address[j]);
+            usart2_print(buffer);
+            strcat(packet, buffer);
+        }
+
+        if (i + 1 < devices.size) {
+            strcat(packet, " ");
+        }
+
+        usart2_print("\r\n");
+    }
+}
+
 int main(void)
 {
     // Initialize USART to WIFI module
@@ -101,36 +110,17 @@ int main(void)
     ds18b20_init(GPIOB, GPIO_Pin_9, TIM3);
 //    ds18b20_set_precission(0);
     ds18b20_devices devices;
-    devices = ds18b20_get_devices();
-    u8 i, j;
+    devices = ds18b20_get_devices(false);
+    u8 i;
 
-    memset(packet, 0, 128);
-    sprintf(buffer, "Found %u devices on 1-Wire", devices.size);
-    usart2_print(buffer);
-    for (i = 0; i < devices.size; ++i) {
-        sprintf(buffer, "Device %u:\r\n", i);
-        usart2_print(buffer);
-        for (j = 0; j < 8; ++j) {
-            memset(buffer, 0, 10);
-            sprintf(buffer, "%02X", devices.devices[i].address[j]);
-            usart2_print(buffer);
-            strcat(packet, buffer);
-        }
+    get_sensors(packet, devices);
 
-        if (i + 1 < devices.size) {
-            strcat(packet, " ");
-        }
-
-        usart2_print("\r\n");
-    }
-    esp8266_send_data(ip_address, 6000, UDP, packet, strlen(packet));
+    esp8266_send_data(ip_address, 5000, UDP, packet, strlen(packet));
     esp8266_wait_for_answer();
     // Required in case of UDP, if removed - all packets will be send on port 6000
     esp8266_close_connection();
 
-
     usart2_print("Done\r\n");
-
 
 	char greeting[] = "Hello, world!";
 	esp8266_send_data(ip_address, 5000, UDP, greeting, strlen(greeting));
@@ -138,10 +128,15 @@ int main(void)
 //    esp8266_close_connection();
 
     int num = 0;
+
     usart2_print("System ready\r\n");
     while(1)
     {
-        ++num;
+        if (++num % 10 == 0) {
+            devices = ds18b20_get_devices(true);
+            get_sensors(packet, devices);
+            esp8266_send_data(ip_address, 5000, UDP, packet, strlen(packet));
+        }
 
         usart2_print("i");
         ds18b20_convert_temperature_all();
@@ -153,6 +148,7 @@ int main(void)
 
         memset(packet, 0, 128);
 
+        strcat(packet, "2"); // Type of packet (2 - sensors data)
         for (i = 0; i < devices.size; ++i) {
             sprintf(buffer, "%u=%d.%u", i, temperatures[i].integer, temperatures[i].fractional);
             strcat(packet, buffer);

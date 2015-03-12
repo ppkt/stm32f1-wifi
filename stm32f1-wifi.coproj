@@ -79,29 +79,30 @@
     <Component id="446" name="DMA" path="" type="2"/>
     <Component id="453" name="I2C" path="" type="2"/>
     <Component id="456" name="TIM" path="" type="2"/>
+    <Component id="467" name="MISC" path="" type="2"/>
   </Components>
   <Files>
     <File name="ds18b20.h" path="C:/Users/ppkt/Documents/GitHub/stm32f1-ds18b20/ds18b20.h" type="1"/>
-    <File name="esp8266.c" path="esp8266.c" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f10x_md_vl.c" path="cmsis_boot/startup/startup_stm32f10x_md_vl.c" type="1"/>
+    <File name="esp8266.c" path="esp8266.c" type="1"/>
     <File name="cmsis_boot/system_stm32f10x.c" path="cmsis_boot/system_stm32f10x.c" type="1"/>
     <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
     <File name="stdio" path="" type="2"/>
     <File name="one_wire.h" path="C:/Users/ppkt/Documents/GitHub/common_lib/one_wire.h" type="1"/>
     <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
-    <File name="stm_lib/inc/stm32f10x_tim.h" path="stm_lib/inc/stm32f10x_tim.h" type="1"/>
     <File name="cmsis/core_cm3.h" path="cmsis/core_cm3.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_tim.h" path="stm_lib/inc/stm32f10x_tim.h" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
-    <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
     <File name="usart.h" path="usart.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
     <File name="i2c_dma.h" path="C:/Users/ppkt/Documents/GitHub/common_lib/i2c_dma.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_tim.c" path="stm_lib/src/stm32f10x_tim.c" type="1"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="hd44780-i2c.h" path="C:/CooCox/CoIDE/workspace/stm32f1-lcd_i2c/hd44780-i2c.h" type="1"/>
     <File name="stm_lib/src/misc.c" path="stm_lib/src/misc.c" type="1"/>
-    <File name="usart.c" path="usart.c" type="1"/>
     <File name="i2c_dma.c" path="C:/Users/ppkt/Documents/GitHub/common_lib/i2c_dma.c" type="1"/>
+    <File name="usart.c" path="usart.c" type="1"/>
     <File name="cmsis_boot/stm32f10x.h" path="cmsis_boot/stm32f10x.h" type="1"/>
     <File name="cmsis_boot/stm32f10x_conf.h" path="cmsis_boot/stm32f10x_conf.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_dma.c" path="stm_lib/src/stm32f10x_dma.c" type="1"/>
@@ -113,8 +114,8 @@
     <File name="cmsis_boot/system_stm32f10x.h" path="cmsis_boot/system_stm32f10x.h" type="1"/>
     <File name="utils.c" path="C:/Users/ppkt/Documents/GitHub/common_lib/utils.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_rcc.h" path="stm_lib/inc/stm32f10x_rcc.h" type="1"/>
-    <File name="utils.h" path="C:/Users/ppkt/Documents/GitHub/common_lib/utils.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_i2c.h" path="stm_lib/inc/stm32f10x_i2c.h" type="1"/>
+    <File name="utils.h" path="C:/Users/ppkt/Documents/GitHub/common_lib/utils.h" type="1"/>
     <File name="syscalls" path="" type="2"/>
     <File name="ds18b20.c" path="C:/Users/ppkt/Documents/GitHub/stm32f1-ds18b20/ds18b20.c" type="1"/>
     <File name="one_wire.c" path="C:/Users/ppkt/Documents/GitHub/common_lib/one_wire.c" type="1"/>
@@ -125,8 +126,8 @@
     <File name="stm_lib/src/stm32f10x_gpio.c" path="stm_lib/src/stm32f10x_gpio.c" type="1"/>
     <File name="stm_lib/inc" path="" type="2"/>
     <File name="stm_lib/inc/stm32f10x_gpio.h" path="stm_lib/inc/stm32f10x_gpio.h" type="1"/>
+    <File name="main.c" path="main.c" type="1"/>
     <File name="hd44780-i2c.c" path="C:/CooCox/CoIDE/workspace/stm32f1-lcd_i2c/hd44780-i2c.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_usart.h" path="stm_lib/inc/stm32f10x_usart.h" type="1"/>
-    <File name="main.c" path="main.c" type="1"/>
   </Files>
 </Project>

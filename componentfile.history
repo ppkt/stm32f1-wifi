@@ -11,5 +11,7 @@
   <File usedCount="2" path="cmsis_boot/system_stm32f10x.c"/>  
   <File usedCount="2" path="cmsis_boot/system_stm32f10x.h"/>  
   <File usedCount="2" path="stm_lib/inc/stm32f10x_gpio.h"/>  
-  <File usedCount="2" path="stm_lib/src/stm32f10x_gpio.c"/>
+  <File usedCount="2" path="stm_lib/src/stm32f10x_gpio.c"/>  
+  <File usedCount="2" path="stm_lib/inc/misc.h"/>  
+  <File usedCount="2" path="stm_lib/src/misc.c"/>
 </History>
