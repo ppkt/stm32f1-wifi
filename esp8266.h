@@ -68,6 +68,7 @@ void esp8266_get_list_of_aps(void);
 void esp8266_join_ap(char* login, char* password);
 void esp8266_connection_mode(u8 mode);
 void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, char* data, u8 length);
+void esp8266_close_connection(void);
 
 void esp8266_debug_print_connected_ap(void);
 void esp8266_debug_print_list_of_aps(void);

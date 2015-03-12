@@ -123,15 +123,19 @@ int main(void)
 
         usart2_print("\r\n");
     }
-    esp8266_send_data(ip_address, 6000, TCP, packet, strlen(packet));
+    esp8266_send_data(ip_address, 6000, UDP, packet, strlen(packet));
     esp8266_wait_for_answer();
+    // Required in case of UDP, if removed - all packets will be send on port 6000
+    esp8266_close_connection();
+
 
     usart2_print("Done\r\n");
 
 
 	char greeting[] = "Hello, world!";
-	esp8266_send_data(ip_address, 5000, TCP, greeting, strlen(greeting));
+	esp8266_send_data(ip_address, 5000, UDP, greeting, strlen(greeting));
     esp8266_wait_for_answer();
+//    esp8266_close_connection();
 
     int num = 0;
     usart2_print("System ready\r\n");
@@ -150,7 +154,7 @@ int main(void)
         memset(packet, 0, 128);
 
         for (i = 0; i < devices.size; ++i) {
-            sprintf(buffer, "%d.%u", temperatures[i].integer, temperatures[i].fractional);
+            sprintf(buffer, "%u=%d.%u", i, temperatures[i].integer, temperatures[i].fractional);
             strcat(packet, buffer);
 
             if (i + 1 < devices.size) {
@@ -163,8 +167,9 @@ int main(void)
         usart2_print(packet);
 
         free(temperatures);
-        esp8266_send_data(ip_address, 5000, TCP, packet, strlen(packet));
+        esp8266_send_data(ip_address, 5000, UDP, packet, strlen(packet));
         esp8266_wait_for_answer();
+//        esp8266_close_connection();
     }
 }
 

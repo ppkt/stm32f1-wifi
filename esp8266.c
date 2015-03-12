@@ -20,7 +20,7 @@ const char ate1[] = "ATE1\r\n";
 const char at_cifsr_t[] = "AT+CIFSR\r\n";
 const char at_cwlap[] = "AT+CWLAP\r\n"; // List of Access Points
 const char at_cwjap_i[] = "AT+CWJAP?\r\n"; // Conncted AP
-const char at_close[] = "AT\r\n"; // Close connetion
+const char at_close[] = "AT+CIPCLOSE\r\n"; // Close connetion
 char *at_cwjap_se;
 char *at_cwmode_se;
 char *at_cipmux_se;
@@ -33,6 +33,8 @@ char* g_buffer = NULL;
 
 Access_Point ap[20];
 u8 ap_index = 0;
+
+Protocol current_protocol = TCP;
 
 char* connected_ap;
 
@@ -545,6 +547,9 @@ void esp8266_parse_line(void) {
             usart2_print("m1"); // waiting
         } else if (val == 1) {
             usart2_print("m2"); // OK received
+            if (current_protocol == UDP) {
+                s = STATUS_NOT_WORKING; // UDP is stateless
+            }
         } else if (val == 2) {
             usart2_print("M"); // Linked received
             s = STATUS_NOT_WORKING;
@@ -686,6 +691,7 @@ void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, char* data
     } else if (protocol == UDP) {
         strcpy(proto, "UDP");
     }
+    current_protocol = protocol;
     sprintf(buffer, "AT+CIPSTART=\"%s\",\"%s\",%u\r\n", proto, ip_address, port);
     at_cipstart_se = calloc(strlen(buffer) + 1, sizeof(char));
     strcpy(at_cipstart_se, buffer);
@@ -709,13 +715,15 @@ void esp8266_send_data(char* ip_address, u16 port, Protocol protocol, char* data
     esp8266_send_command(TYPE_SET_EXECUTE, AT_SEND_DATA);
     esp8266_wait_for_answer();
 
-    esp8266_send_command(TYPE_SET_EXECUTE, AT_CLOSE);
-    esp8266_wait_for_answer();
-
     free(proto);
     free(at_cipsend_se);
     free(at_cipstart_se);
     free(at_data_buffer);
+}
+
+void esp8266_close_connection(void) {
+    esp8266_send_command(TYPE_SET_EXECUTE, AT_CLOSE);
+    esp8266_wait_for_answer();
 }
 
 char debug_buffer[70];
