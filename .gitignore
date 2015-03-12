@@ -216,3 +216,4 @@ pip-log.txt
 stm32f1-wifi.cogui
 stm32f1-wifi.comarker
 stm32f1-wifi/stm32f1-wifi.elf.xcodeproj/project.pbxproj
+*.comarker
