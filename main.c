@@ -25,15 +25,15 @@ void update_display(simple_float *temperatures, u8 size) {
     char hd_display[32];
     memset(hd_display, 0, 32);
 
-    if (size >= 1) {
-        sprintf(buffer, "%d.%u", temperatures[0].integer, temperatures[0].fractional);
+    if (size >= 1 && temperatures[0].is_valid) {
+        sprintf(buffer, "%d.%u ", temperatures[0].integer, temperatures[0].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
-        memset(hd_display + len, ' ', 7 - len);
+        memset(hd_display + len, ' ', 8 - len);
     }
 
-    if (size >= 2) {
-        sprintf(buffer, " %d.%u", temperatures[1].integer, temperatures[1].fractional);
+    if (size >= 2 && temperatures[1].is_valid) {
+        sprintf(buffer, "%d.%u", temperatures[1].integer, temperatures[1].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
     }
@@ -41,15 +41,15 @@ void update_display(simple_float *temperatures, u8 size) {
     memset(hd_display, 0, 32);
     hd44780_go_to_line(1);
 
-    if (size >= 3) {
-        sprintf(buffer, "%d.%u", temperatures[2].integer, temperatures[2].fractional);
+    if (size >= 3 && temperatures[2].is_valid) {
+        sprintf(buffer, "%d.%u ", temperatures[2].integer, temperatures[2].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
-        memset(hd_display + len, ' ', 7 - len);
+        memset(hd_display + len, ' ', 8 - len);
     }
 
-    if (size >= 4) {
-        sprintf(buffer, " %d.%u", temperatures[3].integer, temperatures[3].fractional);
+    if (size >= 4 && temperatures[3].is_valid) {
+        sprintf(buffer, "%d.%u", temperatures[3].integer, temperatures[3].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
     }
@@ -150,6 +150,10 @@ int main(void)
 
         strcat(packet, "2"); // Type of packet (2 - sensors data)
         for (i = 0; i < devices.size; ++i) {
+            if (!temperatures[i].is_valid) {
+                continue;
+            }
+
             sprintf(buffer, "%u=%d.%u", i, temperatures[i].integer, temperatures[i].fractional);
             strcat(packet, buffer);
 
