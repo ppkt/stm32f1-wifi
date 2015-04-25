@@ -26,14 +26,14 @@ void update_display(simple_float *temperatures, u8 size) {
     memset(hd_display, 0, 32);
 
     if (size >= 1 && temperatures[0].is_valid) {
-        sprintf(buffer, "%d.%u ", temperatures[0].integer, temperatures[0].fractional);
+        sprintf(buffer, "%d.%03u ", temperatures[0].integer, temperatures[0].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
         memset(hd_display + len, ' ', 8 - len);
     }
 
     if (size >= 2 && temperatures[1].is_valid) {
-        sprintf(buffer, "%d.%u", temperatures[1].integer, temperatures[1].fractional);
+        sprintf(buffer, "%d.%03u", temperatures[1].integer, temperatures[1].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
     }
@@ -42,14 +42,14 @@ void update_display(simple_float *temperatures, u8 size) {
     hd44780_go_to_line(1);
 
     if (size >= 3 && temperatures[2].is_valid) {
-        sprintf(buffer, "%d.%u ", temperatures[2].integer, temperatures[2].fractional);
+        sprintf(buffer, "%d.%03u ", temperatures[2].integer, temperatures[2].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
         memset(hd_display + len, ' ', 8 - len);
     }
 
     if (size >= 4 && temperatures[3].is_valid) {
-        sprintf(buffer, "%d.%u", temperatures[3].integer, temperatures[3].fractional);
+        sprintf(buffer, "%d.%03u", temperatures[3].integer, temperatures[3].fractional);
         len = strlen(buffer);
         strcat(hd_display, buffer);
     }
@@ -122,9 +122,9 @@ int main(void)
 
     usart2_print("Done\r\n");
 
-	char greeting[] = "Hello, world!";
-	esp8266_send_data(ip_address, 5000, UDP, greeting, strlen(greeting));
-    esp8266_wait_for_answer();
+//	char greeting[] = "Hello, world!";
+//	esp8266_send_data(ip_address, 5000, UDP, greeting, strlen(greeting));
+//    esp8266_wait_for_answer();
 //    esp8266_close_connection();
 
     int num = 0;
@@ -154,7 +154,7 @@ int main(void)
                 continue;
             }
 
-            sprintf(buffer, "%u=%d.%u", i, temperatures[i].integer, temperatures[i].fractional);
+            sprintf(buffer, "%u=%d.%03u", i, temperatures[i].integer, temperatures[i].fractional);
             strcat(packet, buffer);
 
             if (i + 1 < devices.size) {
