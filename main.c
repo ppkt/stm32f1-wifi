@@ -107,7 +107,7 @@ int main(void)
 
     // Initialize 1-Wire bus and thermal sensors conneted to bus
     usart2_print("Initializing thermal sensor\r\n");
-    ds18b20_init(GPIOB, GPIO_Pin_9, TIM3);
+    ds18b20_init(GPIOA, GPIO_Pin_11, TIM3);
 //    ds18b20_set_precission(0);
     ds18b20_devices devices;
     devices = ds18b20_get_devices(false);
